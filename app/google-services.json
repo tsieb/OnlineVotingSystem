@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "233043538502",
+    "firebase_url": "https://onlinevotingsystem-d9eb2-default-rtdb.firebaseio.com",
+    "project_id": "onlinevotingsystem-d9eb2",
+    "storage_bucket": "onlinevotingsystem-d9eb2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:233043538502:android:ab7883a46cccb2987a5047",
+        "android_client_info": {
+          "package_name": "com.example.onlinevotingsystem"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "233043538502-m1cpjmscfio7joqdjqnv2camvj4u3da1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4BdHdmn8Ru8OFnEucTXu8xqY1XeWWpvQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "233043538502-m1cpjmscfio7joqdjqnv2camvj4u3da1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:233043538502:android:1a3b67db2629cdc77a5047",
+        "android_client_info": {
+          "package_name": "com.example.onlinevotingsystemproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "233043538502-m1cpjmscfio7joqdjqnv2camvj4u3da1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4BdHdmn8Ru8OFnEucTXu8xqY1XeWWpvQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "233043538502-m1cpjmscfio7joqdjqnv2camvj4u3da1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
