@@ -2,12 +2,16 @@ package com.example.onlinevotingsystemproject.ui.login;
 
 import androidx.annotation.Nullable;
 
+import com.example.onlinevotingsystemproject.ui.CreateAccount.CreateAccountUserView;
+
 /**
  * Authentication result : success (user details) or error message.
  */
 class LoginResult {
     @Nullable
     private LoggedInUserView success;
+    @Nullable
+    private CreateAccountUserView createAccount;
     @Nullable
     private Integer error;
 
@@ -19,9 +23,18 @@ class LoginResult {
         this.success = success;
     }
 
+    LoginResult(@Nullable CreateAccountUserView createAccount) {
+        this.createAccount = createAccount;
+    }
+
     @Nullable
     LoggedInUserView getSuccess() {
         return success;
+    }
+
+    @Nullable
+    CreateAccountUserView getCreateAccount() {
+        return createAccount;
     }
 
     @Nullable

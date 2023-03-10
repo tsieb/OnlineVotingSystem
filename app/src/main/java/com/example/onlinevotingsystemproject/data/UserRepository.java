@@ -6,24 +6,24 @@ import com.example.onlinevotingsystemproject.data.model.Account;
  * Class that requests authentication and user information from the remote data source and
  * maintains an in-memory cache of login status and user credentials information.
  */
-public class LoginRepository {
+public class UserRepository {
 
-    private static volatile LoginRepository instance;
+    private static volatile UserRepository instance;
 
-    private com.example.onlinevotingsystemproject.data.LoginDataSource dataSource;
+    private UserDataSource dataSource;
 
     // If user credentials will be cached in local storage, it is recommended it be encrypted
     // @see https://developer.android.com/training/articles/keystore
     private Account account = null;
 
     // private constructor : singleton access
-    private LoginRepository(com.example.onlinevotingsystemproject.data.LoginDataSource dataSource) {
+    private UserRepository(UserDataSource dataSource) {
         this.dataSource = dataSource;
     }
 
-    public static LoginRepository getInstance(com.example.onlinevotingsystemproject.data.LoginDataSource dataSource) {
+    public static UserRepository getInstance(UserDataSource dataSource) {
         if (instance == null) {
-            instance = new LoginRepository(dataSource);
+            instance = new UserRepository(dataSource);
         }
         return instance;
     }

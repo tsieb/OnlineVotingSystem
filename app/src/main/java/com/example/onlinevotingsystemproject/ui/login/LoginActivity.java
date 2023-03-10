@@ -26,6 +26,8 @@ import android.widget.Toast;
 
 import com.example.onlinevotingsystemproject.R;
 import com.example.onlinevotingsystemproject.databinding.ActivityLoginBinding;
+import com.example.onlinevotingsystemproject.ui.CreateAccount.CreateAccountActivity;
+import com.example.onlinevotingsystemproject.ui.CreateAccount.CreateAccountUserView;
 import com.example.onlinevotingsystemproject.ui.topics.TopicActivity;
 
 public class LoginActivity extends AppCompatActivity {
@@ -77,7 +79,12 @@ public class LoginActivity extends AppCompatActivity {
                     showLoginFailed(loginResult.getError());
                     return;
                 }
-                if (loginResult.getSuccess() != null) {
+                if (loginResult.getCreateAccount() != null) {
+                    Log.d("MyApp", "New User");
+                    updateUiWithUser(loginResult.getCreateAccount());
+                    return;
+                }
+                else if (loginResult.getSuccess() != null) {
                     updateUiWithUser(loginResult.getSuccess());
                 }
                 setResult(Activity.RESULT_OK);
@@ -135,6 +142,16 @@ public class LoginActivity extends AppCompatActivity {
         Log.d("MyApp", "Made it to the update!");
         // Start the new activity here
         Intent intent = new Intent(LoginActivity.this, TopicActivity.class);
+        startActivity(intent);
+
+        // Finish the current activity
+        finish();
+    }
+
+    private void updateUiWithUser(CreateAccountUserView model) {
+        Log.d("MyApp", "Made it to account creation !");
+        // Start the new activity here
+        Intent intent = new Intent(LoginActivity.this, CreateAccountActivity.class);
         startActivity(intent);
 
         // Finish the current activity

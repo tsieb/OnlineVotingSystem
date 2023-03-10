@@ -7,19 +7,20 @@ import androidx.lifecycle.ViewModel;
 import android.os.AsyncTask;
 import android.util.Patterns;
 
-import com.example.onlinevotingsystemproject.data.LoginRepository;
+import com.example.onlinevotingsystemproject.data.UserRepository;
 import com.example.onlinevotingsystemproject.data.Result;
 import com.example.onlinevotingsystemproject.data.model.Account;
 import com.example.onlinevotingsystemproject.R;
+import com.example.onlinevotingsystemproject.ui.CreateAccount.CreateAccountUserView;
 
 public class LoginViewModel extends ViewModel {
 
     private MutableLiveData<LoginFormState> loginFormState = new MutableLiveData<>();
     private MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
-    private LoginRepository loginRepository;
+    private UserRepository userRepository;
 
-    LoginViewModel(LoginRepository loginRepository) {
-        this.loginRepository = loginRepository;
+    LoginViewModel(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     LiveData<LoginFormState> getLoginFormState() {
@@ -32,29 +33,33 @@ public class LoginViewModel extends ViewModel {
 
     public void login(String username, String password) {
         // can be launched in a separate asynchronous job
-        new LoginTask(loginRepository, loginResult).execute(username, password);
+        new LoginTask(userRepository, loginResult).execute(username, password);
     }
 
     private static class LoginTask extends AsyncTask<String, Void, Result<Account>> {
 
-        private LoginRepository loginRepository;
+        private UserRepository userRepository;
         private MutableLiveData<LoginResult> loginResult;
 
-        LoginTask(LoginRepository loginRepository, MutableLiveData<LoginResult> loginResult) {
-            this.loginRepository = loginRepository;
+        LoginTask(UserRepository userRepository, MutableLiveData<LoginResult> loginResult) {
+            this.userRepository = userRepository;
             this.loginResult = loginResult;
         }
 
         @Override
         protected Result<Account> doInBackground(String... params) {
-            return loginRepository.login(params[0], params[1]);
+            return userRepository.login(params[0], params[1]);
         }
 
         @Override
         protected void onPostExecute(Result<Account> result) {
             if (result instanceof Result.Success) {
                 Account data = ((Result.Success<Account>) result).getData();
-                loginResult.setValue(new LoginResult(new LoggedInUserView(data.getDisplayName())));
+                loginResult.setValue(new LoginResult(new LoggedInUserView(data.getDisplayName(),
+                        data.getEmail(), data.getPhone())));
+            } else if (result instanceof Result.Create) {
+                String data = ((Result.Create<String>) result).getData();
+                loginResult.setValue(new LoginResult(new CreateAccountUserView(null, data, null)));
             } else {
                 loginResult.setValue(new LoginResult(R.string.login_failed));
             }

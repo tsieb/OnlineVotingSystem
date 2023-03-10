@@ -5,14 +5,17 @@ package com.example.onlinevotingsystemproject.data.model;
  */
 public class Account {
 
-    private String email;
+
     private String userId;
     private String displayName;
+    private String email;
+    private String phone;
 
-    public Account(String userId, String displayName, String email) {
+    public Account(String userId, String displayName, String email, String phone) {
         this.userId = userId;
         this.displayName = displayName;
         this.email = email;
+        this.phone = phone;
     }
 
     public String getUserId() {
@@ -25,5 +28,9 @@ public class Account {
 
     public String getEmail() {
         return email;
+    }
+
+    public String getPhone() {
+        return phone;
     }
 }

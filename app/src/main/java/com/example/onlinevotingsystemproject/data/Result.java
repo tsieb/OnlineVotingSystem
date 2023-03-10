@@ -45,4 +45,17 @@ public class Result<T> {
             return this.error;
         }
     }
+
+    // Error sub-class
+    public final static class Create<T> extends Result {
+        private T data;
+
+        public Create(T data) {
+            this.data = data;
+        }
+
+        public T getData() {
+            return this.data;
+        }
+    }
 }
