@@ -3,6 +3,7 @@ package com.example.onlinevotingsystemproject.ui.topics;
 import android.os.Bundle;
 
 import com.example.onlinevotingsystemproject.R;
+import com.example.onlinevotingsystemproject.ui.CreateAccount.CreateAccountUserView;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,6 +26,9 @@ public class TopicActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // TODO May not work because abject type is different
+        // May need to combine all user view classes
+        TopicsUserView TopicsUserView = (TopicsUserView) getIntent().getSerializableExtra("create_account_user_view");
         binding = ActivityTopicBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 

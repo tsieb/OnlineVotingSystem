@@ -9,6 +9,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Map;
+import java.util.UUID;
+
 /**
  * Class that handles authentication w/ login credentials and retrieves user information.
  */
@@ -23,8 +26,6 @@ public class UserDataSource {
             Task<DataSnapshot> dataSnapshotTask = accountsRef.get();
             Tasks.await(dataSnapshotTask);
             DataSnapshot dataSnapshot = dataSnapshotTask.getResult();
-            Log.d("TAG", "onDataChange: dataSnapshot key: " + dataSnapshot.getKey());
-            Log.d("TAG", "onDataChange: dataSnapshot exists: " + dataSnapshot.exists());
             Account loggedInAccount = null;
             Log.d("MyApp", "Checking the DB");
             // Loop through all the users in the database
@@ -57,6 +58,40 @@ public class UserDataSource {
             } else {
                 Log.d("MyApp", "Failed to find user");
                 return new Result.Error(new Exception("Invalid email or password"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result.Error(e);
+        }
+    }
+
+    public Result<Account> createAccount(String name, String email, String phone, String password, String repeat) {
+        try {
+            // Check if account with same email already exists
+            Boolean user_exists = false;
+            Task<DataSnapshot> dataSnapshotTask = accountsRef.get();
+            Tasks.await(dataSnapshotTask);
+            DataSnapshot dataSnapshot = dataSnapshotTask.getResult();
+            for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                String emailFromDatabase = userSnapshot.child("email").getValue(String.class);
+                if (emailFromDatabase.equals(email)) {
+                    user_exists = true;
+                    break;
+                }
+            }
+            if (user_exists) {
+                Log.d("MyApp", "Account already exists");
+                return new Result.Error(new Exception("Account already exists"));
+            } else {
+                // Create a new account entry in the database
+                String userId = UUID.randomUUID().toString();
+                accountsRef.child(userId).child("name").setValue(name);
+                accountsRef.child(userId).child("email").setValue(email);
+                accountsRef.child(userId).child("phone").setValue(phone);
+                accountsRef.child(userId).child("password").setValue(password);
+                Account newAccount = new Account(userId, name, email, phone);
+                Log.d("MyApp", "New account created");
+                return new Result.Success<>(newAccount);
             }
         } catch (Exception e) {
             e.printStackTrace();

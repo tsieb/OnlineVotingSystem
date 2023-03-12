@@ -30,7 +30,7 @@ public class CreateAccountViewModel extends ViewModel {
         return createAccountResult;
     }
 
-    public void login(String name, String email, String phone, String password, String repeat) {
+    public void createAccount(String name, String email, String phone, String password, String repeat) {
         // can be launched in a separate asynchronous job
         new CreateAccountTask(userRepository, createAccountResult).execute(name, email, phone, password, repeat);
     }
@@ -48,7 +48,7 @@ public class CreateAccountViewModel extends ViewModel {
 
         @Override
         protected Result<Account> doInBackground(String... params) {
-            return userRepository.login(params[0], params[1]);
+            return userRepository.createAccount(params[0], params[1], params[2], params[3], params[4]);
         }
 
         @Override
@@ -121,6 +121,6 @@ public class CreateAccountViewModel extends ViewModel {
 
     // A placeholder repeat validation check
     private boolean isRepeatValid(String password, String repeat) {
-        return password != null && password.trim().length() > 5 && password == repeat;
+        return ((password != null) && (password.trim().length() > 5) && (password.equals(repeat)));
     }
 }

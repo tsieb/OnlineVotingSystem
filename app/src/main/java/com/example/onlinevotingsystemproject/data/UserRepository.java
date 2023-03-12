@@ -51,4 +51,13 @@ public class UserRepository {
         }
         return result;
     }
+
+    public Result<Account> createAccount(String name, String email, String phone, String password, String repeat) {
+        // handle login
+        Result<Account> result = dataSource.createAccount(name, email, phone, password, repeat);
+        if (result instanceof Result.Success) {
+            setLoggedInUser(((Result.Success<Account>) result).getData());
+        }
+        return result;
+    }
 }

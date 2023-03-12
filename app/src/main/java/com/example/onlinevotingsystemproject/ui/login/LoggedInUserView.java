@@ -1,9 +1,11 @@
 package com.example.onlinevotingsystemproject.ui.login;
 
+import java.io.Serializable;
+
 /**
  * Class exposing authenticated user details to the UI.
  */
-class LoggedInUserView {
+class LoggedInUserView implements Serializable {
     private String displayName;
     private String email;
     private String phone;

@@ -142,6 +142,7 @@ public class LoginActivity extends AppCompatActivity {
         Log.d("MyApp", "Made it to the update!");
         // Start the new activity here
         Intent intent = new Intent(LoginActivity.this, TopicActivity.class);
+        intent.putExtra("logged_in_user_view", model);
         startActivity(intent);
 
         // Finish the current activity
@@ -152,6 +153,7 @@ public class LoginActivity extends AppCompatActivity {
         Log.d("MyApp", "Made it to account creation !");
         // Start the new activity here
         Intent intent = new Intent(LoginActivity.this, CreateAccountActivity.class);
+        intent.putExtra("create_account_user_view", model);
         startActivity(intent);
 
         // Finish the current activity

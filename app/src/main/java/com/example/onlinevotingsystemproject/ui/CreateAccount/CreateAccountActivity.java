@@ -50,6 +50,10 @@ public class CreateAccountActivity extends AppCompatActivity {
         final Button submitButton = binding.buttonComplete;
         final Button cancelButton = binding.buttonCancel;
 
+        CreateAccountUserView createAccountUserView = (CreateAccountUserView) getIntent().getSerializableExtra("create_account_user_view");
+        // TODO Doesn't currently set the text
+        userNameEditText.setText(createAccountUserView.getDisplayName());
+
         createAccountViewModel.getCreateAccountFormState().observe(this, new Observer<CreateAccountFormState>() {
             @Override
             public void onChanged(@Nullable CreateAccountFormState createAccountFormState) {
@@ -127,7 +131,7 @@ public class CreateAccountActivity extends AppCompatActivity {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    createAccountViewModel.login(userNameEditText.getText().toString(),
+                    createAccountViewModel.createAccount(userNameEditText.getText().toString(),
                             userEmailEditText.getText().toString(), userPhoneEditText.getText().toString(),
                             userPasswordEditText.getText().toString(), userRepeatEditText.getText().toString());
                 }
@@ -138,7 +142,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createAccountViewModel.login(userNameEditText.getText().toString(),
+                createAccountViewModel.createAccount(userNameEditText.getText().toString(),
                         userEmailEditText.getText().toString(), userPhoneEditText.getText().toString(),
                         userPasswordEditText.getText().toString(), userRepeatEditText.getText().toString());
             }
@@ -163,6 +167,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         Log.d("MyApp", "Made it to the update!");
         // Start the new activity here
         Intent intent = new Intent(CreateAccountActivity.this, TopicActivity.class);
+        intent.putExtra("create_account_user_view", model);
         startActivity(intent);
 
         // Finish the current activity
