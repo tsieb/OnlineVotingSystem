@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import android.os.AsyncTask;
+import android.util.Log;
 import android.util.Patterns;
 
 import com.example.onlinevotingsystemproject.data.UserRepository;
@@ -53,13 +54,14 @@ public class LoginViewModel extends ViewModel {
 
         @Override
         protected void onPostExecute(Result<Account> result) {
+            Log.d("MyApp", result.toString());
             if (result instanceof Result.Success) {
                 Account data = ((Result.Success<Account>) result).getData();
                 loginResult.setValue(new LoginResult(new LoggedInUserView(data.getDisplayName(),
-                        data.getEmail(), data.getPhone())));
+                        data.getEmail(), data.getPhone(), data.getType(), data.getUserId())));
             } else if (result instanceof Result.Create) {
                 String data = ((Result.Create<String>) result).getData();
-                loginResult.setValue(new LoginResult(new CreateAccountUserView(null, data, null)));
+                loginResult.setValue(new LoginResult(new CreateAccountUserView(null, data, null, null)));
             } else {
                 loginResult.setValue(new LoginResult(R.string.login_failed));
             }

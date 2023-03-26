@@ -1,5 +1,7 @@
 package com.example.onlinevotingsystemproject.data;
 
+import android.util.Log;
+
 import com.example.onlinevotingsystemproject.data.model.Account;
 
 /**
@@ -46,15 +48,16 @@ public class UserRepository {
     public Result<Account> login(String username, String password) {
         // handle login
         Result<Account> result = dataSource.login(username, password);
+        Log.d("MyApp", "Testing: " + result.toString());
         if (result instanceof Result.Success) {
             setLoggedInUser(((Result.Success<Account>) result).getData());
         }
         return result;
     }
 
-    public Result<Account> createAccount(String name, String email, String phone, String password, String repeat) {
+    public Result<Account> createAccount(String name, String email, String phone, String password, String repeat, Boolean type) {
         // handle login
-        Result<Account> result = dataSource.createAccount(name, email, phone, password, repeat);
+        Result<Account> result = dataSource.createAccount(name, email, phone, password, repeat, type);
         if (result instanceof Result.Success) {
             setLoggedInUser(((Result.Success<Account>) result).getData());
         }

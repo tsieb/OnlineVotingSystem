@@ -30,9 +30,9 @@ public class CreateAccountViewModel extends ViewModel {
         return createAccountResult;
     }
 
-    public void createAccount(String name, String email, String phone, String password, String repeat) {
+    public void createAccount(String name, String email, String phone, String password, String repeat, Boolean type) {
         // can be launched in a separate asynchronous job
-        new CreateAccountTask(userRepository, createAccountResult).execute(name, email, phone, password, repeat);
+        new CreateAccountTask(userRepository, createAccountResult).execute(name, email, phone, password, repeat, String.valueOf(type)); // Very lazy way to pass bool
     }
 
     private static class CreateAccountTask extends AsyncTask<String, Void, Result<Account>> {
@@ -48,14 +48,14 @@ public class CreateAccountViewModel extends ViewModel {
 
         @Override
         protected Result<Account> doInBackground(String... params) {
-            return userRepository.createAccount(params[0], params[1], params[2], params[3], params[4]);
+            return userRepository.createAccount(params[0], params[1], params[2], params[3], params[4], Boolean.parseBoolean(params[4]));
         }
 
         @Override
         protected void onPostExecute(Result<Account> result) {
             if (result instanceof Result.Success) {
                 Account data = ((Result.Success<Account>) result).getData();
-                createAccountResult.setValue(new CreateAccountResult(new CreateAccountUserView(data.getDisplayName(), data.getEmail(), data.getPhone())));
+                createAccountResult.setValue(new CreateAccountResult(new CreateAccountUserView(data.getDisplayName(), data.getEmail(), data.getPhone(), data.getType())));
             } else {
                 createAccountResult.setValue(new CreateAccountResult(R.string.login_failed));
             }

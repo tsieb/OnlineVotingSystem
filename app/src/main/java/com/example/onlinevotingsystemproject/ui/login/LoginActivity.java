@@ -1,45 +1,37 @@
 package com.example.onlinevotingsystemproject.ui.login;
 
 import android.app.Activity;
-
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.StringRes;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.onlinevotingsystemproject.R;
 import com.example.onlinevotingsystemproject.databinding.ActivityLoginBinding;
 import com.example.onlinevotingsystemproject.ui.CreateAccount.CreateAccountActivity;
 import com.example.onlinevotingsystemproject.ui.CreateAccount.CreateAccountUserView;
-import com.example.onlinevotingsystemproject.ui.topics.TopicActivity;
+import com.example.onlinevotingsystemproject.ui.main.MainActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
     private LoginViewModel loginViewModel;
-    private ActivityLoginBinding binding;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityLoginBinding.inflate(getLayoutInflater());
+        com.example.onlinevotingsystemproject.databinding.ActivityLoginBinding binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         loginViewModel = new ViewModelProvider(this, new LoginViewModelFactory())
@@ -50,48 +42,42 @@ public class LoginActivity extends AppCompatActivity {
         final Button loginButton = binding.login;
         final ProgressBar loadingProgressBar = binding.loading;
 
-        loginViewModel.getLoginFormState().observe(this, new Observer<LoginFormState>() {
-            @Override
-            public void onChanged(@Nullable LoginFormState loginFormState) {
-                if (loginFormState == null) {
-                    return;
-                }
-                loginButton.setEnabled(loginFormState.isDataValid());
-                if (loginFormState.getUsernameError() != null) {
-                    usernameEditText.setError(getString(loginFormState.getUsernameError()));
-                }
-                if (loginFormState.getPasswordError() != null) {
-                    passwordEditText.setError(getString(loginFormState.getPasswordError()));
-                }
+        loginViewModel.getLoginFormState().observe(this, loginFormState -> {
+            if (loginFormState == null) {
+                return;
+            }
+            loginButton.setEnabled(loginFormState.isDataValid());
+            if (loginFormState.getUsernameError() != null) {
+                usernameEditText.setError(getString(loginFormState.getUsernameError()));
+            }
+            if (loginFormState.getPasswordError() != null) {
+                passwordEditText.setError(getString(loginFormState.getPasswordError()));
             }
         });
 
-        loginViewModel.getLoginResult().observe(this, new Observer<LoginResult>() {
-            @Override
-            public void onChanged(@Nullable LoginResult loginResult) {
-                if (loginResult == null) {
-                    return;
-                }
-                Log.d("MyApp", "Got the update!");
-                loadingProgressBar.setVisibility(View.GONE);
-                if (loginResult.getError() != null) {
-                    Log.d("MyApp", "Error: " + loginResult.getError());
-                    showLoginFailed(loginResult.getError());
-                    return;
-                }
-                if (loginResult.getCreateAccount() != null) {
-                    Log.d("MyApp", "New User");
-                    updateUiWithUser(loginResult.getCreateAccount());
-                    return;
-                }
-                else if (loginResult.getSuccess() != null) {
-                    updateUiWithUser(loginResult.getSuccess());
-                }
-                setResult(Activity.RESULT_OK);
-
-                //Complete and destroy login activity once successful
-                finish();
+        loginViewModel.getLoginResult().observe(this, loginResult -> {
+            if (loginResult == null) {
+                return;
             }
+            Log.d("MyApp", "Got the update!");
+            loadingProgressBar.setVisibility(View.GONE);
+            if (loginResult.getError() != null) {
+                Log.d("MyApp", "Error: " + loginResult.getError());
+                showLoginFailed(loginResult.getError());
+                return;
+            }
+            if (loginResult.getCreateAccount() != null) {
+                Log.d("MyApp", "New User");
+                updateUiWithUser(loginResult.getCreateAccount());
+                return;
+            }
+            else if (loginResult.getSuccess() != null) {
+                updateUiWithUser(loginResult.getSuccess());
+            }
+            setResult(Activity.RESULT_OK);
+
+            //Complete and destroy login activity once successful
+            finish();
         });
 
         TextWatcher afterTextChangedListener = new TextWatcher() {
@@ -113,25 +99,18 @@ public class LoginActivity extends AppCompatActivity {
         };
         usernameEditText.addTextChangedListener(afterTextChangedListener);
         passwordEditText.addTextChangedListener(afterTextChangedListener);
-        passwordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    loginViewModel.login(usernameEditText.getText().toString(),
-                            passwordEditText.getText().toString());
-                }
-                return false;
-            }
-        });
-
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadingProgressBar.setVisibility(View.VISIBLE);
+        passwordEditText.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
                 loginViewModel.login(usernameEditText.getText().toString(),
                         passwordEditText.getText().toString());
             }
+            return false;
+        });
+
+        loginButton.setOnClickListener(v -> {
+            loadingProgressBar.setVisibility(View.VISIBLE);
+            loginViewModel.login(usernameEditText.getText().toString(),
+                    passwordEditText.getText().toString());
         });
     }
 
@@ -139,24 +118,20 @@ public class LoginActivity extends AppCompatActivity {
         String welcome = getString(R.string.welcome) + model.getDisplayName();
         Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
 
-        Log.d("MyApp", "Made it to the update!");
-        // Start the new activity here
-        Intent intent = new Intent(LoginActivity.this, TopicActivity.class);
-        intent.putExtra("logged_in_user_view", model);
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        intent.putExtra("user_email", model.getEmail());
+        intent.putExtra("user_name", model.getDisplayName());
+        intent.putExtra("user_type", model.getType());
+        intent.putExtra("user_id", model.getUserID());
         startActivity(intent);
-
-        // Finish the current activity
         finish();
     }
 
     private void updateUiWithUser(CreateAccountUserView model) {
-        Log.d("MyApp", "Made it to account creation !");
-        // Start the new activity here
         Intent intent = new Intent(LoginActivity.this, CreateAccountActivity.class);
-        intent.putExtra("create_account_user_view", model);
+        intent.putExtra("user_email", model.getEmail());
         startActivity(intent);
 
-        // Finish the current activity
         finish();
     }
 

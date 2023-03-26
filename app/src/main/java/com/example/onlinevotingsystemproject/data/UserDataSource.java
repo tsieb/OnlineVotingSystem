@@ -21,6 +21,7 @@ public class UserDataSource {
 
     public Result<Account> login(String email, String password) {
         try {
+            Log.d("MyApp", "Attempting to check the DB");
             Boolean user_exists = false;
             String emailFromDatabase = null;
             Task<DataSnapshot> dataSnapshotTask = accountsRef.get();
@@ -45,7 +46,8 @@ public class UserDataSource {
                 String userName = userSnapshot.child("name").getValue(String.class);
                 String userEmail = userSnapshot.child("email").getValue(String.class);
                 String userPhone = userSnapshot.child("phone").getValue(String.class);
-                loggedInAccount = new Account(userId, userName, userEmail, userPhone);
+                Boolean userType = userSnapshot.child("manager").getValue(Boolean.class);
+                loggedInAccount = new Account(userId, userName, userEmail, userPhone, userType);
                 break;
             }
             if (loggedInAccount != null) {
@@ -65,7 +67,7 @@ public class UserDataSource {
         }
     }
 
-    public Result<Account> createAccount(String name, String email, String phone, String password, String repeat) {
+    public Result<Account> createAccount(String name, String email, String phone, String password, String repeat, Boolean type) {
         try {
             // Check if account with same email already exists
             Boolean user_exists = false;
@@ -89,7 +91,8 @@ public class UserDataSource {
                 accountsRef.child(userId).child("email").setValue(email);
                 accountsRef.child(userId).child("phone").setValue(phone);
                 accountsRef.child(userId).child("password").setValue(password);
-                Account newAccount = new Account(userId, name, email, phone);
+                accountsRef.child(userId).child("manager").setValue(type);
+                Account newAccount = new Account(userId, name, email, phone, type);
                 Log.d("MyApp", "New account created");
                 return new Result.Success<>(newAccount);
             }

@@ -11,15 +11,21 @@ public class CreateAccountUserView implements Serializable {
     private String name;
     private String email;
     private String phone;
+    private Boolean type;
     //... other data fields that may be accessible to the UI
 
-    public CreateAccountUserView(@Nullable String name, String email, @Nullable String phone) {
+    public CreateAccountUserView(@Nullable String name, String email, @Nullable String phone, @Nullable Boolean type) {
         this.name = name;
-        this.email = name;
+        this.email = email;
         this.phone = phone;
+        this.type = type;
     }
 
-    String getDisplayName() {
+    public String getDisplayName() {
+        return name;
+    }
+
+    public String getEmail() {
         return email;
     }
 }

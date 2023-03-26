@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,7 +27,7 @@ import com.example.onlinevotingsystemproject.databinding.ActivityLoginBinding;
 import com.example.onlinevotingsystemproject.ui.login.LoginActivity;
 import com.example.onlinevotingsystemproject.ui.login.LoginViewModel;
 import com.example.onlinevotingsystemproject.ui.login.LoginViewModelFactory;
-import com.example.onlinevotingsystemproject.ui.topics.TopicActivity;
+import com.example.onlinevotingsystemproject.ui.main.MainActivity;
 
 public class CreateAccountActivity extends AppCompatActivity {
 
@@ -47,12 +48,13 @@ public class CreateAccountActivity extends AppCompatActivity {
         final EditText userPhoneEditText= binding.editTextPhone;
         final EditText userPasswordEditText= binding.editTextPassword;
         final EditText userRepeatEditText= binding.editTextConfirmationPassword;
+        final Switch managerToggle = binding.managerToggle;
         final Button submitButton = binding.buttonComplete;
         final Button cancelButton = binding.buttonCancel;
 
-        CreateAccountUserView createAccountUserView = (CreateAccountUserView) getIntent().getSerializableExtra("create_account_user_view");
+        String user_email = (String) getIntent().getSerializableExtra("user_email");
         // TODO Doesn't currently set the text
-        userNameEditText.setText(createAccountUserView.getDisplayName());
+        userNameEditText.setText(user_email);
 
         createAccountViewModel.getCreateAccountFormState().observe(this, new Observer<CreateAccountFormState>() {
             @Override
@@ -133,7 +135,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     createAccountViewModel.createAccount(userNameEditText.getText().toString(),
                             userEmailEditText.getText().toString(), userPhoneEditText.getText().toString(),
-                            userPasswordEditText.getText().toString(), userRepeatEditText.getText().toString());
+                            userPasswordEditText.getText().toString(), userRepeatEditText.getText().toString(), managerToggle.isChecked());
                 }
                 return false;
             }
@@ -144,7 +146,7 @@ public class CreateAccountActivity extends AppCompatActivity {
             public void onClick(View v) {
                 createAccountViewModel.createAccount(userNameEditText.getText().toString(),
                         userEmailEditText.getText().toString(), userPhoneEditText.getText().toString(),
-                        userPasswordEditText.getText().toString(), userRepeatEditText.getText().toString());
+                        userPasswordEditText.getText().toString(), userRepeatEditText.getText().toString(), managerToggle.isChecked());
             }
         });
 
@@ -166,7 +168,7 @@ public class CreateAccountActivity extends AppCompatActivity {
 
         Log.d("MyApp", "Made it to the update!");
         // Start the new activity here
-        Intent intent = new Intent(CreateAccountActivity.this, TopicActivity.class);
+        Intent intent = new Intent(CreateAccountActivity.this, MainActivity.class);
         intent.putExtra("create_account_user_view", model);
         startActivity(intent);
 
