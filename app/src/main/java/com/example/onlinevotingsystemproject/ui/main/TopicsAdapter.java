@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Filter;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.onlinevotingsystemproject.R;
 import com.example.onlinevotingsystemproject.data.model.Topic;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TopicsAdapter extends RecyclerView.Adapter<TopicsAdapter.TopicViewHolder> {
@@ -21,10 +23,13 @@ public class TopicsAdapter extends RecyclerView.Adapter<TopicsAdapter.TopicViewH
     private final List<Topic> topics;
     private OnItemClickListener listener;
 
+    List<Topic> topicsFiltered;
+
     public TopicsAdapter(@NonNull Context context, List<Topic> topics, OnItemClickListener listener) {
         this.context = context;
         this.topics = topics;
         this.listener = listener;
+        this.topicsFiltered = new ArrayList<>(topics);
     }
 
     @NonNull
@@ -36,13 +41,13 @@ public class TopicsAdapter extends RecyclerView.Adapter<TopicsAdapter.TopicViewH
 
     @Override
     public void onBindViewHolder(@NonNull TopicViewHolder holder, int position) {
-        Topic topic = topics.get(position);
+        Topic topic = topicsFiltered.get(position);
         holder.titleTextView.setText(topic.getTitle());
     }
 
     @Override
     public int getItemCount() {
-        return topics.size();
+        return topicsFiltered.size();
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -72,5 +77,37 @@ public class TopicsAdapter extends RecyclerView.Adapter<TopicsAdapter.TopicViewH
                 }
             });
         }
+    }
+
+    //@Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                String query = constraint.toString().toLowerCase().trim();
+                List<Topic> filteredList = new ArrayList<>();
+
+                if (query.isEmpty()) {
+                    filteredList.addAll(topics);
+                } else {
+                    for (Topic topic : topics) {
+                        if (topic.getTitle().toLowerCase().contains(query) || topic.getDescription().toLowerCase().contains(query)) {
+                            filteredList.add(topic);
+                        }
+                    }
+                }
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = filteredList;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                topicsFiltered.clear();
+                topicsFiltered.addAll((List<Topic>) results.values);
+                notifyDataSetChanged();
+            }
+        };
     }
 }

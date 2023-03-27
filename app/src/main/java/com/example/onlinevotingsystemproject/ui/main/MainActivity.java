@@ -4,10 +4,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.onlinevotingsystemproject.R;
 import com.example.onlinevotingsystemproject.data.model.Account;
 import com.example.onlinevotingsystemproject.data.model.Topic;
+import com.example.onlinevotingsystemproject.ui.login.LoginActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -98,6 +102,23 @@ public class MainActivity extends AppCompatActivity {
                 showCreateTopicDialog();
             }
         });
+
+        SearchView searchView = findViewById(R.id.search_view);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                topicsAdapter.getFilter().filter(newText);
+                return false;
+            }
+        });
+
+        recyclerView.setAdapter(topicsAdapter);
+        topicsAdapter.notifyDataSetChanged();
     }
 
     private void fetchTopics() {
@@ -112,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
                         topics.add(topic);
                     }
                 }
+                topicsAdapter.topicsFiltered = new ArrayList<>(topics);
                 topicsAdapter.notifyDataSetChanged();
             }
 
@@ -121,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
 
     @Override
     protected void onStart() {
@@ -233,6 +256,33 @@ public class MainActivity extends AppCompatActivity {
 
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_update_account) {
+            // Start UpdateAccountActivity
+            Intent updateAccountIntent = new Intent(MainActivity.this, UpdateAccountActivity.class);
+            updateAccountIntent.putExtra("user_id", loggedInUser.getUserId());
+            startActivity(updateAccountIntent);
+            return true;
+        } else if (id == R.id.action_log_out) {
+            // Log out and start LoginActivity
+            Intent logOutIntent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(logOutIntent);
+            finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 
