@@ -68,7 +68,7 @@ public class LoginActivity extends AppCompatActivity {
             }
             if (loginResult.getCreateAccount() != null) {
                 Log.d("MyApp", "New User");
-                updateUiWithUser(loginResult.getCreateAccount());
+                updateUiWithUser(usernameEditText.getText().toString(), passwordEditText.getText().toString());
                 return;
             }
             else if (loginResult.getSuccess() != null) {
@@ -97,6 +97,7 @@ public class LoginActivity extends AppCompatActivity {
                         passwordEditText.getText().toString());
             }
         };
+
         usernameEditText.addTextChangedListener(afterTextChangedListener);
         passwordEditText.addTextChangedListener(afterTextChangedListener);
         passwordEditText.setOnEditorActionListener((v, actionId, event) -> {
@@ -127,9 +128,12 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 
-    private void updateUiWithUser(CreateAccountUserView model) {
+    private void updateUiWithUser(String email, String password) {
         Intent intent = new Intent(LoginActivity.this, CreateAccountActivity.class);
-        intent.putExtra("user_email", model.getEmail());
+        Log.d("MyApp", "Email: " + email);
+        Log.d("MyApp", "Password: " + password);
+        intent.putExtra("user_email", email);
+        intent.putExtra("user_password", password);
         startActivity(intent);
 
         finish();

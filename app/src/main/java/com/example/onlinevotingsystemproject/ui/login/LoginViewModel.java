@@ -60,8 +60,7 @@ public class LoginViewModel extends ViewModel {
                 loginResult.setValue(new LoginResult(new LoggedInUserView(data.getDisplayName(),
                         data.getEmail(), data.getPhone(), data.getType(), data.getUserId())));
             } else if (result instanceof Result.Create) {
-                String data = ((Result.Create<String>) result).getData();
-                loginResult.setValue(new LoginResult(new CreateAccountUserView(null, data, null, null)));
+                loginResult.setValue(new LoginResult(new CreateAccountUserView(null, null, null, null)));
             } else {
                 loginResult.setValue(new LoginResult(R.string.login_failed));
             }

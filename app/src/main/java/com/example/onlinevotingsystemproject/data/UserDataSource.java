@@ -9,8 +9,16 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.Map;
 import java.util.UUID;
+
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 /**
  * Class that handles authentication w/ login credentials and retrieves user information.
@@ -56,7 +64,7 @@ public class UserDataSource {
             }
             else if (!user_exists){
                 Log.d("MyApp", "User to be created");
-                return new Result.Create<String>(emailFromDatabase);
+                return new Result.Create<String>(email);
             } else {
                 Log.d("MyApp", "Failed to find user");
                 return new Result.Error(new Exception("Invalid email or password"));
@@ -102,8 +110,33 @@ public class UserDataSource {
         }
     }
 
-
     public void logout() {
         // TODO: revoke authentication
+    }
+
+    public Result<Account> updateName(String name, String userId) {
+        Log.d("MyApp", "Update name: " + userId + name);
+        accountsRef.child(userId).child("name").setValue(name);
+        Account newAccount = new Account();
+        newAccount.setUserId(userId);
+        newAccount.setDisplayName(name);
+        return new Result.Success<>(newAccount);
+    }
+
+    public Result<Account> updatePhone(String phone, String userId) {
+        Log.d("MyApp", "Update name: " + userId + phone);
+        accountsRef.child(userId).child("phone").setValue(phone);
+        Account newAccount = new Account();
+        newAccount.setUserId(userId);
+        newAccount.setPhone(phone);
+        return new Result.Success<>(newAccount);
+    }
+
+    public Result<Account> updatePassword(String password, String userId) {
+        Log.d("MyApp", "Update name: " + userId + password);
+        accountsRef.child(userId).child("password").setValue(password);
+        Account newAccount = new Account();
+        newAccount.setUserId(userId);
+        return new Result.Success<>(newAccount);
     }
 }

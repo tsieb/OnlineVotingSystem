@@ -1,6 +1,8 @@
 package com.example.onlinevotingsystemproject.ui.main;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -16,6 +18,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class ManagerStatsActivity extends AppCompatActivity {
@@ -36,21 +39,30 @@ public class ManagerStatsActivity extends AppCompatActivity {
         topicDescription = getIntent().getStringExtra("topic_description");
         topicOptions = getIntent().getStringArrayListExtra("topic_options");
 
-        // Initialize your views, for example:
         statsLayout = findViewById(R.id.stats_layout);
 
         fetchVotingStats();
+
+        Button backButton = findViewById(R.id.return_button);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
-    private void displayStats(Map<String, Integer> stats) {
+    private void displayStats(Map<String, Integer> stats, int totalVotes) {
         statsLayout.removeAllViews(); // Clear previous stats
 
-        for (String option : topicOptions) {
-            Integer count = stats.getOrDefault(option, 0);
+        for (Map.Entry<String, Integer> entry : stats.entrySet()) {
+            String option = entry.getKey();
+            int count = entry.getValue();
+            String percentage = getPercentageString(count, totalVotes);
 
-            TextView statsTextView = new TextView(this);
-            statsTextView.setText(option + ": " + count);
-            statsLayout.addView(statsTextView);
+            TextView optionStatsTextView = new TextView(this);
+            optionStatsTextView.setText(option + ": " + count + " (" + percentage + ")");
+            statsLayout.addView(optionStatsTextView);
         }
     }
 
@@ -60,13 +72,16 @@ public class ManagerStatsActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Map<String, Integer> stats = new HashMap<>();
+                int totalVotes = 0;
+
                 for (DataSnapshot voteSnapshot : dataSnapshot.getChildren()) {
                     String vote = voteSnapshot.getValue(String.class);
                     if (vote != null) {
                         stats.put(vote, stats.getOrDefault(vote, 0) + 1);
+                        totalVotes++;
                     }
                 }
-                displayStats(stats);
+                displayStats(stats, totalVotes);
             }
 
             @Override
@@ -74,5 +89,14 @@ public class ManagerStatsActivity extends AppCompatActivity {
                 // Handle error
             }
         });
+    }
+
+    private String getPercentageString(int votes, int totalVotes) {
+        if (totalVotes == 0) {
+            return "0%";
+        }
+
+        float percentage = (float) votes / totalVotes * 100;
+        return String.format(Locale.getDefault(), "%.1f%%", percentage);
     }
 }

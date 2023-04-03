@@ -6,26 +6,65 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context=".ui.main.UpdateAccountActivity">
+    tools:context=".ui.update.UpdateAccountActivity">
+
+    <Button
+        android:id="@+id/update_back_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="32dp"
+        android:text="Back" />
 
     <EditText
-        android:id="@+id/et_display_name"
+        android:id="@+id/display_name_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Display Name" />
 
+    <Button
+        android:id="@+id/btn_update_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="32dp"
+        android:text="Update Name" />
+
     <EditText
-        android:id="@+id/et_phone_number"
+        android:id="@+id/phone_number_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Phone Number"
         android:inputType="phone" />
 
     <Button
-        android:id="@+id/btn_update_account"
+        android:id="@+id/update_phone_number_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Update Account" />
+        android:layout_marginBottom="32dp"
+        android:text="Update Phone Number" />
+
+    <EditText
+        android:id="@+id/new_password_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="New Password"
+        android:inputType="textPassword" />
+
+    <EditText
+        android:id="@+id/confirm_password_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Confirm Password"
+        android:inputType="textPassword" />
+
+    <Button
+        android:id="@+id/update_password_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="32dp"
+        android:text="Update Password" />
 
 </LinearLayout>

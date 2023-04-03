@@ -31,6 +31,7 @@ import com.example.onlinevotingsystemproject.ui.main.MainActivity;
 
 public class CreateAccountActivity extends AppCompatActivity {
 
+    //TODO New Accounts can't interact with activities!
     private CreateAccountViewModel createAccountViewModel;
     private ActivityCreateAccountBinding binding;
 
@@ -52,9 +53,9 @@ public class CreateAccountActivity extends AppCompatActivity {
         final Button submitButton = binding.buttonComplete;
         final Button cancelButton = binding.buttonCancel;
 
-        String user_email = (String) getIntent().getSerializableExtra("user_email");
-        // TODO Doesn't currently set the text
-        userNameEditText.setText(user_email);
+        String user_email = (String) getIntent().getStringExtra("user_email");
+        userEmailEditText.setText(user_email);
+        userPasswordEditText.setText((String) getIntent().getStringExtra("user_password"));
 
         createAccountViewModel.getCreateAccountFormState().observe(this, new Observer<CreateAccountFormState>() {
             @Override
